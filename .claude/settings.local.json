@@ -18,7 +18,26 @@
       "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --yes)",
       "Bash(npm install:*)",
-      "Bash(npx shadcn@latest init -d --yes)"
+      "Bash(npx shadcn@latest init -d --yes)",
+      "Bash(npx shadcn@latest add card input textarea label badge dialog sheet tabs avatar separator scroll-area select checkbox -y)",
+      "Bash(ls C:/Users/cano_/lemons/tailwind.config.*)",
+      "Bash(ls C:/Users/cano_/lemons/postcss.config.*)",
+      "Bash(npx tsc:*)",
+      "Bash(node_modules/.bin/tsc --noEmit src/components/navbar.tsx src/components/footer.tsx)",
+      "Bash(node node_modules/.bin/tsc --noEmit --pretty)",
+      "Bash(npx next:*)",
+      "Bash(node_modules/.bin/next build:*)",
+      "Bash(cmd.exe /c \"where node\")",
+      "Bash(node_modules/.bin/tsc --noEmit --pretty)",
+      "Bash(cmd.exe /c \"node --version\")",
+      "Bash(where pnpm:*)",
+      "Bash(node node_modules/.bin/next build)",
+      "Bash(node ./node_modules/next/dist/bin/next build)",
+      "Bash(node \"node_modules/typescript/bin/tsc\" --noEmit --pretty)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs\")",
+      "Bash(node -e \"const pkg = require\\('@base-ui/react/package.json'\\); console.log\\(pkg.version\\)\")",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(pkill -f \"next dev\")"
     ]
   }
 }
