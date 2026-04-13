@@ -16,7 +16,9 @@
       "Bash(powershell.exe -Command \"winget --version\")",
       "Bash(powershell.exe -Command \"winget install OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements\")",
       "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
-      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --yes)"
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init -d --yes)"
     ]
   }
 }
