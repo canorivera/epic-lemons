@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { AIChatPanel } from "@/components/ai-chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -15,8 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { FounderCard } from "@/components/person-card";
 import { NetworkGraph } from "@/components/network-graph";
 import type { NetworkNode } from "@/components/network-graph";
-import { founders } from "@/lib/data";
-import type { Industry, StartupStage } from "@/lib/types";
+import { getAllFounders } from "@/lib/store";
+import type { Industry, StartupStage, Founder } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -59,6 +59,9 @@ function formatLabel(value: string) {
 // ---------------------------------------------------------------------------
 
 export default function FoundersPage() {
+  const [founders, setFounders] = useState<Founder[]>([]);
+  useEffect(() => { setFounders(getAllFounders()); }, []);
+
   // Filter state
   const [search, setSearch] = useState("");
   const [industryFilter, setIndustryFilter] = useState<string>("all");
@@ -77,7 +80,7 @@ export default function FoundersPage() {
         role: `${f.company} — ${f.one_liner}`,
         industries: [f.industry],
       })),
-    []
+    [founders]
   );
 
   const handleNodeClick = useCallback(
@@ -116,18 +119,18 @@ export default function FoundersPage() {
 
       return true;
     });
-  }, [search, industryFilter, stageFilter]);
+  }, [founders, search, industryFilter, stageFilter]);
 
   // ------ Unique industries & stages present in data (for filter options) ------
   const presentIndustries = useMemo(() => {
     const set = new Set(founders.map((f) => f.industry));
     return ALL_INDUSTRIES.filter((i) => set.has(i));
-  }, []);
+  }, [founders]);
 
   const presentStages = useMemo(() => {
     const set = new Set(founders.map((f) => f.stage));
     return ALL_STAGES.filter((s) => set.has(s));
-  }, []);
+  }, [founders]);
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-10 space-y-8">

@@ -19,9 +19,9 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { mentors } from "@/lib/data";
+import { getAllMentors, getAllFounders, addFeedback, addSupplyGap } from "@/lib/store";
 import { findTopMatches } from "@/lib/matching";
-import type { Founder, MatchResult } from "@/lib/types";
+import type { Founder, Mentor, MatchResult } from "@/lib/types";
 import { challengeLabels, industryLabels, stageLabels } from "@/lib/questionnaire-options";
 
 function formatLabel(s: string): string {
@@ -57,7 +57,7 @@ export default function MatchResultsPage() {
       id: user.id || "demo",
       name: user.name || "Demo User",
       avatar: "",
-      email: user.email || "",
+      contacts: user.contacts || { email: user.email || "" },
       company: user.company || "Demo Startup",
       one_liner: user.one_liner || "",
       bio: user.bio || "",
@@ -71,40 +71,48 @@ export default function MatchResultsPage() {
       working_style: user.working_style || "balanced",
       meeting_frequency: user.meeting_frequency || "biweekly",
       timezone: user.timezone || "America/Mexico_City",
+      location: user.location || "",
+      languages: user.languages || [],
+      skills: user.skills || [],
       created_at: user.created_at || new Date().toISOString(),
     };
 
-    const results = findTopMatches(founder, mentors, 8);
+    const allMentors = getAllMentors();
+    const allFounders = getAllFounders();
+    const results = findTopMatches(founder, allMentors, 8, allFounders);
     setMatches(results);
   }, [router]);
 
   function submitFeedback(mentorId: string) {
     const fb = feedback[mentorId];
     if (!fb) return;
-    // Store feedback in localStorage for demo
-    const existing = JSON.parse(localStorage.getItem("lemons_feedback") || "[]");
-    existing.push({
+    const user = JSON.parse(localStorage.getItem("lemons_user") || "{}");
+    const mentor = matches.find((m) => m.mentor.id === mentorId)?.mentor;
+    addFeedback({
+      id: `fb-${Date.now()}`,
+      founder_id: user.id || "demo",
+      founder_name: user.name || "Unknown",
       mentor_id: mentorId,
-      ...fb,
+      mentor_name: mentor?.name || "Unknown",
+      rating: fb.rating,
+      comment: fb.comment || "",
       created_at: new Date().toISOString(),
     });
-    localStorage.setItem("lemons_feedback", JSON.stringify(existing));
     alert("Thank you for your feedback!");
   }
 
   function reportNoMatch() {
     setReported(true);
-    // In production, this would alert admins
-    const gaps = JSON.parse(localStorage.getItem("lemons_supply_gaps") || "[]");
     const user = JSON.parse(localStorage.getItem("lemons_user") || "{}");
-    gaps.push({
-      founder: user.name,
-      needs: user.looking_for,
-      industry: user.industry,
-      stage: user.stage,
+    addSupplyGap({
+      id: `gap-${Date.now()}`,
+      founder_name: user.name || "Unknown",
+      founder_email: user.contacts?.email || user.email || "",
+      needs: user.looking_for || [],
+      industry: user.industry || "",
+      stage: user.stage || "",
       created_at: new Date().toISOString(),
     });
-    localStorage.setItem("lemons_supply_gaps", JSON.stringify(gaps));
   }
 
   if (matches.length === 0) {
@@ -163,6 +171,9 @@ export default function MatchResultsPage() {
                     {Math.round(match.score * 100)}%
                   </div>
                   <p className="text-xs text-muted-foreground">match score</p>
+                  {match.stable && (
+                    <Badge variant="secondary" className="mt-1 text-[10px]">Stable Match</Badge>
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -171,10 +182,11 @@ export default function MatchResultsPage() {
               <p className="text-sm">{match.reason}</p>
 
               {/* Score breakdown */}
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-5 gap-2">
                 {[
                   { label: "Expertise", value: match.breakdown.complementarity },
                   { label: "Alignment", value: match.breakdown.alignment },
+                  { label: "Text Sim", value: match.breakdown.textSimilarity },
                   { label: "Availability", value: match.breakdown.availability },
                   { label: "Style", value: match.breakdown.style },
                 ].map((item) => (

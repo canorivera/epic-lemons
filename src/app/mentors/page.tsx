@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Search, Users, Network, BookOpen, Bot } from "lucide-react";
 import { AIChatPanel } from "@/components/ai-chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,8 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { MentorCard } from "@/components/person-card";
 import { NetworkGraph } from "@/components/network-graph";
 import type { NetworkNode } from "@/components/network-graph";
-import { mentors } from "@/lib/data";
-import type { Industry, ExpertiseArea } from "@/lib/types";
+import { getAllMentors } from "@/lib/store";
+import type { Industry, ExpertiseArea, Mentor } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -29,21 +29,15 @@ function formatLabel(value: string) {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-/** Collect every unique industry across all mentors. */
-const ALL_INDUSTRIES: Industry[] = Array.from(
-  new Set(mentors.flatMap((m) => m.industries))
-).sort();
-
-/** Collect every unique expertise area across all mentors. */
-const ALL_EXPERTISE: ExpertiseArea[] = Array.from(
-  new Set(mentors.flatMap((m) => m.expertise))
-).sort();
-
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 export default function MentorsPage() {
+  // --- Dynamic data ---
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  useEffect(() => { setMentors(getAllMentors()); }, []);
+
   // --- Filter state ---
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState<string>("all");
@@ -52,6 +46,9 @@ export default function MentorsPage() {
 
   // Ref to the directory section so we can scroll to a card
   const directoryRef = useRef<HTMLDivElement>(null);
+
+  const ALL_INDUSTRIES: Industry[] = useMemo(() => Array.from(new Set(mentors.flatMap((m) => m.industries))).sort() as Industry[], [mentors]);
+  const ALL_EXPERTISE: ExpertiseArea[] = useMemo(() => Array.from(new Set(mentors.flatMap((m) => m.expertise))).sort() as ExpertiseArea[], [mentors]);
 
   // --- Network nodes ---
   const networkNodes: NetworkNode[] = useMemo(
@@ -62,7 +59,7 @@ export default function MentorsPage() {
         role: `${m.current_role} at ${m.company}`,
         industries: m.industries,
       })),
-    []
+    [mentors]
   );
 
   // --- Filtered mentors ---
@@ -91,7 +88,7 @@ export default function MentorsPage() {
       }
       return true;
     });
-  }, [searchQuery, industryFilter, expertiseFilter]);
+  }, [mentors, searchQuery, industryFilter, expertiseFilter]);
 
   // --- Scroll to mentor card in directory on node click ---
   const handleNodeClick = useCallback(

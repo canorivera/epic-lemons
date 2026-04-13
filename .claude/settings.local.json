@@ -37,7 +37,11 @@
       "Bash(export PATH=\"$PATH:/c/Program Files/nodejs\")",
       "Bash(node -e \"const pkg = require\\('@base-ui/react/package.json'\\); console.log\\(pkg.version\\)\")",
       "Bash(curl -s http://localhost:3000)",
-      "Bash(pkill -f \"next dev\")"
+      "Bash(pkill -f \"next dev\")",
+      "Bash(npm run:*)",
+      "Bash(node -e \"const lr = require\\('lucide-react'\\); const icons = ['Twitter','Linkedin','Mail','Phone','Globe','Languages','Tag','Trophy','Building2','DollarSign','FileText','Video','ExternalLink']; icons.forEach\\(i => console.log\\(i, !!lr[i]\\)\\)\")",
+      "Bash(node -e \"const lr = require\\('lucide-react'\\); const all = Object.keys\\(lr\\); console.log\\(all.filter\\(k => k.toLowerCase\\(\\).includes\\('linked'\\) || k.toLowerCase\\(\\).includes\\('twitter'\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const lr = require\\('lucide-react'\\); console.log\\(['Link','Link2','AtSign','Hash'].map\\(i => i + ':' + !!lr[i]\\).join\\(' '\\)\\)\")"
     ]
   }
 }

@@ -18,6 +18,7 @@ const navLinks = [
   { href: "/mentors", label: "Mentors" },
   { href: "/founders", label: "Founders" },
   { href: "/match", label: "Find a Match" },
+  { href: "/admin", label: "Admin" },
 ]
 
 export function Navbar() {

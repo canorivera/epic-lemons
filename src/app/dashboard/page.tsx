@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { mentors, founders } from "@/lib/data";
+import { getAllMentors, getAllFounders, getAllFeedback } from "@/lib/store";
 
 interface UserProfile {
   type: "founder" | "mentor";
@@ -37,6 +37,8 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [feedbackList, setFeedbackList] = useState<any[]>([]);
+  const [mentors, setMentors] = useState<any[]>([]);
+  const [founders, setFounders] = useState<any[]>([]);
 
   useEffect(() => {
     const userJson = localStorage.getItem("lemons_user");
@@ -45,7 +47,9 @@ export default function DashboardPage() {
       return;
     }
     setUser(JSON.parse(userJson));
-    setFeedbackList(JSON.parse(localStorage.getItem("lemons_feedback") || "[]"));
+    setFeedbackList(getAllFeedback());
+    setMentors(getAllMentors());
+    setFounders(getAllFounders());
   }, [router]);
 
   function handleLogout() {
@@ -196,31 +200,28 @@ export default function DashboardPage() {
             <CardTitle className="text-lg">Your Feedback</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {feedbackList.map((fb, i) => {
-              const mentor = mentors.find((m) => m.id === fb.mentor_id);
-              return (
-                <div key={i} className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                        {mentor ? getInitials(mentor.name) : "??"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-medium">{mentor?.name || "Unknown Mentor"}</p>
-                      {fb.comment && (
-                        <p className="text-xs text-muted-foreground">{fb.comment}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: fb.rating }).map((_, j) => (
-                      <Star key={j} className="h-3.5 w-3.5 fill-primary text-primary" />
-                    ))}
+            {feedbackList.map((fb, i) => (
+              <div key={i} className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                      {getInitials(fb.mentor_name || "??")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">{fb.mentor_name || "Unknown Mentor"}</p>
+                    {fb.comment && (
+                      <p className="text-xs text-muted-foreground">{fb.comment}</p>
+                    )}
                   </div>
                 </div>
-              );
-            })}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: fb.rating }).map((_: unknown, j: number) => (
+                    <Star key={j} className="h-3.5 w-3.5 fill-primary text-primary" />
+                  ))}
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
       )}

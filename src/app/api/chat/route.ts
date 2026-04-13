@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { groq, isGroqConfigured } from "@/lib/groq";
-import { mentors, founders } from "@/lib/data";
+import { mentors as seedMentors, founders as seedFounders } from "@/lib/data";
 import type { ChatMessage, Mentor, Founder } from "@/lib/types";
+
+// Note: API routes run on the server and can't access localStorage.
+// We use the seed data here. Custom signups are included client-side.
+const mentors = seedMentors;
+const founders = seedFounders;
 
 // ---------------------------------------------------------------------------
 // Keyword-based fallback (works without Groq API key)

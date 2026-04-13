@@ -37,11 +37,19 @@ export type WorkingStyle = "hands-on" | "strategic" | "balanced";
 export type MeetingFrequency = "weekly" | "biweekly" | "monthly";
 export type MentorMotivation = "giving-back" | "deal-flow" | "sector-learning" | "advisory-equity" | "networking";
 
+export interface ContactInfo {
+  email: string;
+  phone?: string;
+  linkedin?: string;
+  twitter?: string;
+  website?: string;
+}
+
 export interface Founder {
   id: string;
   name: string;
   avatar: string;
-  email: string;
+  contacts: ContactInfo;
   company: string;
   one_liner: string;
   bio: string;
@@ -55,8 +63,17 @@ export interface Founder {
   working_style: WorkingStyle;
   meeting_frequency: MeetingFrequency;
   timezone: string;
-  linkedin?: string;
-  website?: string;
+  location: string;
+  languages: string[];
+  // Fundraising info
+  funding_raised?: string;
+  revenue_stage?: "pre-revenue" | "early-revenue" | "<$1M ARR" | "$1M-$10M ARR" | "$10M+ ARR";
+  // Media & documents
+  pitch_deck_url?: string;
+  video_url?: string;
+  documents?: { name: string; url: string }[];
+  // Skills & tags
+  skills: string[];
   created_at: string;
 }
 
@@ -64,7 +81,7 @@ export interface Mentor {
   id: string;
   name: string;
   avatar: string;
-  email: string;
+  contacts: ContactInfo;
   current_role: string;
   company: string;
   bio: string;
@@ -79,7 +96,13 @@ export interface Mentor {
   working_style: WorkingStyle;
   meeting_frequency: MeetingFrequency;
   timezone: string;
-  linkedin?: string;
+  location: string;
+  languages: string[];
+  // Professional
+  skills: string[];
+  notable_achievements?: string[];
+  portfolio_companies?: string[];
+  // Engagement
   sessions_completed: number;
   avg_rating: number;
   calendly_url?: string;
@@ -94,8 +117,10 @@ export interface MatchResult {
     alignment: number;
     availability: number;
     style: number;
+    textSimilarity: number;
   };
   reason: string;
+  stable: boolean; // Whether this is a stable match (Gale-Shapley)
 }
 
 export interface ChatMessage {
@@ -108,9 +133,21 @@ export interface ChatMessage {
 export interface MatchFeedback {
   id: string;
   founder_id: string;
+  founder_name: string;
   mentor_id: string;
+  mentor_name: string;
   rating: number;
   comment: string;
-  helpful: boolean;
+  created_at: string;
+}
+
+export interface SupplyGap {
+  id: string;
+  founder_name: string;
+  founder_email: string;
+  needs: string[];
+  industry: string;
+  stage: string;
+  description?: string;
   created_at: string;
 }

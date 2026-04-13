@@ -13,7 +13,25 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Star, MapPin, Clock, Briefcase, Users } from "lucide-react";
+import {
+  Star,
+  MapPin,
+  Clock,
+  Briefcase,
+  Users,
+  Mail,
+  Phone,
+  Link2,
+  AtSign,
+  Globe,
+  Languages,
+  Trophy,
+  Building2,
+  DollarSign,
+  FileText,
+  Video,
+  ExternalLink,
+} from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -227,10 +245,12 @@ export function MentorCard({ mentor }: { mentor: Mentor }) {
             <Briefcase className="size-3" />
             {mentor.years_experience} years
           </span>
-          <span className="inline-flex items-center gap-1">
-            <MapPin className="size-3" />
-            {mentor.timezone}
-          </span>
+          {mentor.location && (
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="size-3" />
+              {mentor.location}
+            </span>
+          )}
           <span className="inline-flex items-center gap-1">
             <Clock className="size-3" />
             {formatLabel(mentor.meeting_frequency)}
@@ -239,7 +259,42 @@ export function MentorCard({ mentor }: { mentor: Mentor }) {
             <Users className="size-3" />
             {mentor.current_mentees}/{mentor.max_mentees} mentees
           </span>
+          {mentor.languages?.length > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <Languages className="size-3" />
+              {mentor.languages.join(", ")}
+            </span>
+          )}
         </div>
+
+        {/* Contact Info */}
+        {mentor.contacts && (
+          <div className="rounded-lg bg-muted/50 p-3 space-y-1.5">
+            <h4 className="text-xs font-semibold text-muted-foreground mb-1">Contact</h4>
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+              {mentor.contacts.email && (
+                <a href={`mailto:${mentor.contacts.email}`} className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                  <Mail className="size-3" /> {mentor.contacts.email}
+                </a>
+              )}
+              {mentor.contacts.phone && (
+                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                  <Phone className="size-3" /> {mentor.contacts.phone}
+                </span>
+              )}
+              {mentor.contacts.linkedin && (
+                <a href={mentor.contacts.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                  <Link2 className="size-3" /> LinkedIn
+                </a>
+              )}
+              {mentor.contacts.twitter && (
+                <a href={`https://x.com/${mentor.contacts.twitter.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                  <AtSign className="size-3" /> {mentor.contacts.twitter}
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         <Separator />
 
@@ -271,6 +326,20 @@ export function MentorCard({ mentor }: { mentor: Mentor }) {
           </div>
         </div>
 
+        {/* Skills */}
+        {mentor.skills?.length > 0 && (
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground mb-1.5">Skills</h4>
+            <div className="flex flex-wrap gap-1">
+              {mentor.skills.map((skill) => (
+                <Badge key={skill} variant="secondary" className="text-[10px] bg-primary/10 text-primary">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Preferred Stages */}
         <div>
           <h4 className="text-xs font-semibold text-muted-foreground mb-1.5">
@@ -297,6 +366,36 @@ export function MentorCard({ mentor }: { mentor: Mentor }) {
           </div>
         )}
 
+        {/* Notable Achievements */}
+        {mentor.notable_achievements && mentor.notable_achievements.length > 0 && (
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
+              <Trophy className="size-3" /> Notable Achievements
+            </h4>
+            <ul className="list-disc list-inside text-sm space-y-0.5">
+              {mentor.notable_achievements.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Portfolio Companies */}
+        {mentor.portfolio_companies && mentor.portfolio_companies.length > 0 && (
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
+              <Building2 className="size-3" /> Portfolio Companies
+            </h4>
+            <div className="flex flex-wrap gap-1">
+              {mentor.portfolio_companies.map((co) => (
+                <Badge key={co} variant="outline" className="text-[10px]">
+                  {co}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Rating + Sessions */}
         <Separator />
         <div className="flex items-center justify-between">
@@ -306,29 +405,17 @@ export function MentorCard({ mentor }: { mentor: Mentor }) {
           </span>
         </div>
 
-        {/* Links */}
-        {(mentor.linkedin || mentor.calendly_url) && (
+        {/* Calendly */}
+        {mentor.calendly_url && (
           <div className="flex gap-3 text-xs">
-            {mentor.linkedin && (
-              <a
-                href={mentor.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary underline underline-offset-2 hover:text-primary/80"
-              >
-                LinkedIn
-              </a>
-            )}
-            {mentor.calendly_url && (
-              <a
-                href={mentor.calendly_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary underline underline-offset-2 hover:text-primary/80"
-              >
-                Book a session
-              </a>
-            )}
+            <a
+              href={mentor.calendly_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              <ExternalLink className="size-3" /> Book a session
+            </a>
           </div>
         )}
       </DialogContent>
@@ -427,28 +514,80 @@ export function FounderCard({ founder }: { founder: Founder }) {
             <Users className="size-3" />
             Team of {founder.team_size} ({formatLabel(founder.team_composition)})
           </span>
-          <span className="inline-flex items-center gap-1">
-            <MapPin className="size-3" />
-            {founder.timezone}
-          </span>
+          {founder.location && (
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="size-3" />
+              {founder.location}
+            </span>
+          )}
           <span className="inline-flex items-center gap-1">
             <Clock className="size-3" />
             {formatLabel(founder.meeting_frequency)}
           </span>
+          {founder.languages?.length > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <Languages className="size-3" />
+              {founder.languages.join(", ")}
+            </span>
+          )}
         </div>
+
+        {/* Contact Info */}
+        {founder.contacts && (
+          <div className="rounded-lg bg-muted/50 p-3 space-y-1.5">
+            <h4 className="text-xs font-semibold text-muted-foreground mb-1">Contact</h4>
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+              {founder.contacts.email && (
+                <a href={`mailto:${founder.contacts.email}`} className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                  <Mail className="size-3" /> {founder.contacts.email}
+                </a>
+              )}
+              {founder.contacts.phone && (
+                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                  <Phone className="size-3" /> {founder.contacts.phone}
+                </span>
+              )}
+              {founder.contacts.linkedin && (
+                <a href={founder.contacts.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                  <Link2 className="size-3" /> LinkedIn
+                </a>
+              )}
+              {founder.contacts.twitter && (
+                <a href={`https://x.com/${founder.contacts.twitter.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                  <AtSign className="size-3" /> {founder.contacts.twitter}
+                </a>
+              )}
+              {founder.contacts.website && (
+                <a href={founder.contacts.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                  <Globe className="size-3" /> Website
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         <Separator />
 
-        {/* Stage + Industry */}
+        {/* Stage + Industry + Funding */}
         <div>
           <h4 className="text-xs font-semibold text-muted-foreground mb-1.5">
             Stage & Industry
           </h4>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5 items-center">
             <StageBadge stage={founder.stage} />
             <Badge variant="secondary" className="text-[10px]">
               {formatLabel(founder.industry)}
             </Badge>
+            {founder.funding_raised && (
+              <Badge variant="secondary" className="text-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                <DollarSign className="size-2.5 mr-0.5" /> {founder.funding_raised}
+              </Badge>
+            )}
+            {founder.revenue_stage && (
+              <Badge variant="outline" className="text-[10px]">
+                {formatLabel(founder.revenue_stage)}
+              </Badge>
+            )}
           </div>
         </div>
 
@@ -480,6 +619,20 @@ export function FounderCard({ founder }: { founder: Founder }) {
           </div>
         </div>
 
+        {/* Skills */}
+        {founder.skills?.length > 0 && (
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground mb-1.5">Skills</h4>
+            <div className="flex flex-wrap gap-1">
+              {founder.skills.map((skill) => (
+                <Badge key={skill} variant="secondary" className="text-[10px] bg-primary/10 text-primary">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Working Style */}
         <div>
           <h4 className="text-xs font-semibold text-muted-foreground mb-1.5">
@@ -488,31 +641,29 @@ export function FounderCard({ founder }: { founder: Founder }) {
           <p className="text-sm">{formatLabel(founder.working_style)}</p>
         </div>
 
-        {/* Links */}
-        {(founder.linkedin || founder.website) && (
+        {/* Media & Documents */}
+        {(founder.pitch_deck_url || founder.video_url || (founder.documents && founder.documents.length > 0)) && (
           <>
             <Separator />
-            <div className="flex gap-3 text-xs">
-              {founder.linkedin && (
-                <a
-                  href={founder.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary underline underline-offset-2 hover:text-primary/80"
-                >
-                  LinkedIn
-                </a>
-              )}
-              {founder.website && (
-                <a
-                  href={founder.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary underline underline-offset-2 hover:text-primary/80"
-                >
-                  Website
-                </a>
-              )}
+            <div>
+              <h4 className="text-xs font-semibold text-muted-foreground mb-1.5">Media & Documents</h4>
+              <div className="flex flex-wrap gap-3 text-xs">
+                {founder.pitch_deck_url && (
+                  <a href={founder.pitch_deck_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                    <FileText className="size-3" /> Pitch Deck
+                  </a>
+                )}
+                {founder.video_url && (
+                  <a href={founder.video_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                    <Video className="size-3" /> Video
+                  </a>
+                )}
+                {founder.documents?.map((doc, i) => (
+                  <a key={i} href={doc.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+                    <FileText className="size-3" /> {doc.name}
+                  </a>
+                ))}
+              </div>
             </div>
           </>
         )}
