@@ -3,11 +3,6 @@ import { groq, isGroqConfigured } from "@/lib/groq";
 import { mentors as seedMentors, founders as seedFounders } from "@/lib/data";
 import type { ChatMessage, Mentor, Founder } from "@/lib/types";
 
-// Note: API routes run on the server and can't access localStorage.
-// We use the seed data here. Custom signups are included client-side.
-const mentors = seedMentors;
-const founders = seedFounders;
-
 // ---------------------------------------------------------------------------
 // Keyword-based fallback (works without Groq API key)
 // ---------------------------------------------------------------------------
@@ -96,7 +91,7 @@ function formatLabel(s: string): string {
   return s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function fallbackMentorResponse(message: string): string {
+function fallbackMentorResponse(message: string, mentors: Mentor[]): string {
   const industries = findKeywordMatches(message, INDUSTRY_KEYWORDS);
   const expertise = findKeywordMatches(message, EXPERTISE_KEYWORDS);
   const stages = findKeywordMatches(message, STAGE_KEYWORDS);
@@ -131,7 +126,7 @@ function fallbackMentorResponse(message: string): string {
     .join("\n\n")}\n\nWould you like more details about any of these mentors, or should I refine the search?`;
 }
 
-function fallbackFounderResponse(message: string): string {
+function fallbackFounderResponse(message: string, founders: Founder[]): string {
   const industries = findKeywordMatches(message, INDUSTRY_KEYWORDS);
   const expertise = findKeywordMatches(message, EXPERTISE_KEYWORDS);
   const stages = findKeywordMatches(message, STAGE_KEYWORDS);
@@ -165,11 +160,18 @@ function fallbackFounderResponse(message: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, type, history } = (await req.json()) as {
+    const body = (await req.json()) as {
       message: string;
       type: "mentors" | "founders";
       history: ChatMessage[];
+      mentors?: Mentor[];
+      founders?: Founder[];
     };
+    const { message, type, history } = body;
+
+    // Use client-provided data (includes localStorage signups) or fall back to seed data
+    const mentors: Mentor[] = body.mentors?.length ? body.mentors : seedMentors;
+    const founders: Founder[] = body.founders?.length ? body.founders : seedFounders;
 
     // If Groq is configured, try LLM first, fall back to keyword matching on error
     if (isGroqConfigured && groq) {
@@ -207,8 +209,8 @@ export async function POST(req: NextRequest) {
     // Fallback: keyword-based matching
     const response =
       type === "mentors"
-        ? fallbackMentorResponse(message)
-        : fallbackFounderResponse(message);
+        ? fallbackMentorResponse(message, mentors)
+        : fallbackFounderResponse(message, founders);
 
     return NextResponse.json({ response });
   } catch (error) {

@@ -41,7 +41,9 @@
       "Bash(npm run:*)",
       "Bash(node -e \"const lr = require\\('lucide-react'\\); const icons = ['Twitter','Linkedin','Mail','Phone','Globe','Languages','Tag','Trophy','Building2','DollarSign','FileText','Video','ExternalLink']; icons.forEach\\(i => console.log\\(i, !!lr[i]\\)\\)\")",
       "Bash(node -e \"const lr = require\\('lucide-react'\\); const all = Object.keys\\(lr\\); console.log\\(all.filter\\(k => k.toLowerCase\\(\\).includes\\('linked'\\) || k.toLowerCase\\(\\).includes\\('twitter'\\)\\).join\\('\\\\n'\\)\\)\")",
-      "Bash(node -e \"const lr = require\\('lucide-react'\\); console.log\\(['Link','Link2','AtSign','Hash'].map\\(i => i + ':' + !!lr[i]\\).join\\(' '\\)\\)\")"
+      "Bash(node -e \"const lr = require\\('lucide-react'\\); console.log\\(['Link','Link2','AtSign','Hash'].map\\(i => i + ':' + !!lr[i]\\).join\\(' '\\)\\)\")",
+      "Bash(node -e ':*)",
+      "Bash(node -e \" const icons = require\\('lucide-static'\\); if \\(icons.Citrus\\) console.log\\(icons.Citrus\\); else console.log\\('not found in lucide-static'\\); \")"
     ]
   }
 }

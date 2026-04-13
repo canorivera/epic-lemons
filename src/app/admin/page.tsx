@@ -10,9 +10,13 @@ import {
   TrendingUp,
   BarChart3,
   Shield,
+  LogIn,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -27,19 +31,89 @@ function formatLabel(s: string): string {
   return s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const ADMIN_EMAIL = "admin@itam.mx";
+const ADMIN_PASSWORD = "adminadmin";
+
 export default function AdminPage() {
   const router = useRouter();
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [founders, setFounders] = useState<Founder[]>([]);
   const [feedback, setFeedback] = useState<MatchFeedback[]>([]);
   const [gaps, setGaps] = useState<SupplyGap[]>([]);
 
   useEffect(() => {
+    // Check if already authenticated this session
+    if (sessionStorage.getItem("lemons_admin") === "true") {
+      setAuthenticated(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!authenticated) return;
     setMentors(getAllMentors());
     setFounders(getAllFounders());
     setFeedback(getAllFeedback());
     setGaps(getAllSupplyGaps());
-  }, []);
+  }, [authenticated]);
+
+  function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (loginEmail === ADMIN_EMAIL && loginPassword === ADMIN_PASSWORD) {
+      sessionStorage.setItem("lemons_admin", "true");
+      setAuthenticated(true);
+      setLoginError("");
+    } else {
+      setLoginError("Invalid email or password.");
+    }
+  }
+
+  if (!authenticated) {
+    return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-primary" />
+              Admin Login
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  placeholder="admin@itam.mx"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Password</Label>
+                <Input
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="Password"
+                />
+              </div>
+              {loginError && (
+                <p className="text-xs text-destructive">{loginError}</p>
+              )}
+              <Button type="submit" className="w-full gap-1.5">
+                <LogIn className="h-4 w-4" /> Sign In
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const avgRating =
     feedback.length > 0

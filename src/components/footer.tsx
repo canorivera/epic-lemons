@@ -86,8 +86,14 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 border-t border-border pt-6 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} EPIC-Lab. All rights reserved.
+        <div className="mt-10 border-t border-border pt-6 flex items-center justify-between text-sm text-muted-foreground">
+          <span>&copy; {new Date().getFullYear()} EPIC-Lab. All rights reserved.</span>
+          <Link
+            href="/admin"
+            className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+          >
+            Log in as admin
+          </Link>
         </div>
       </div>
     </footer>

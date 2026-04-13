@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getAllMentors, getAllFounders } from "@/lib/store";
 import type { ChatMessage } from "@/lib/types";
 
 interface AIChatPanelProps {
@@ -58,6 +59,8 @@ export function AIChatPanel({ type }: AIChatPanelProps) {
           message: text,
           type,
           history: [...messages, userMessage].slice(-10),
+          mentors: getAllMentors(),
+          founders: getAllFounders(),
         }),
       });
 
