@@ -106,7 +106,7 @@ export function AIChatPanel({ type }: AIChatPanelProps) {
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 px-4 py-3" ref={scrollRef}>
+      <ScrollArea className="flex-1 min-h-0 px-4 py-3" ref={scrollRef}>
         <div className="space-y-4">
           {messages.map((msg) => (
             <div
