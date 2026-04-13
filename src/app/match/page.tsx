@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Sparkles, ArrowRight, LogIn } from "lucide-react";
+import { Citrus, ArrowRight, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -27,7 +27,7 @@ export default function MatchPage() {
         <Card className="w-full max-w-md text-center">
           <CardHeader>
             <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-              <Sparkles className="h-7 w-7 text-primary" />
+              <Citrus className="h-7 w-7 text-primary" />
             </div>
             <CardTitle className="text-2xl">
               {userType === "founder" ? "Find Your Mentor" : "Your Mentee Matches"}
@@ -53,7 +53,7 @@ export default function MatchPage() {
       <Card className="w-full max-w-md text-center">
         <CardHeader>
           <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-            <Sparkles className="h-7 w-7 text-primary" />
+            <Citrus className="h-7 w-7 text-primary" />
           </div>
           <CardTitle className="text-2xl">Find Your Perfect Match</CardTitle>
         </CardHeader>

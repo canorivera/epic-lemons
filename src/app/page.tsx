@@ -7,7 +7,7 @@ import {
   Brain,
   Handshake,
   ArrowRight,
-  Sparkles,
+  Citrus,
   Users,
   Rocket,
   Star,
@@ -68,7 +68,7 @@ const steps = [
 const stats = [
   { value: "50+", label: "Expert Mentors", icon: Users },
   { value: "100+", label: "Founders Matched", icon: Rocket },
-  { value: "500+", label: "Sessions Completed", icon: Sparkles },
+  { value: "500+", label: "Sessions Completed", icon: Citrus },
   { value: "4.8", label: "Average Rating", icon: Star },
 ];
 
@@ -80,7 +80,7 @@ export default function Home() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
+              <Citrus className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold tracking-tight text-foreground">
               Lemons
@@ -115,7 +115,7 @@ export default function Home() {
             variant="outline"
             className="mb-6 gap-1.5 border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary"
           >
-            <Sparkles className="h-3.5 w-3.5" />
+            <Citrus className="h-3.5 w-3.5" />
             AI-Powered Mentor Matching
           </Badge>
 
@@ -340,7 +340,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary">
-              <Sparkles className="h-3 w-3 text-primary-foreground" />
+              <Citrus className="h-3 w-3 text-primary-foreground" />
             </div>
             <span className="text-sm font-semibold text-foreground">
               Lemons
