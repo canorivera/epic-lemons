@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Citrus, LogIn } from "lucide-react";
@@ -13,6 +13,12 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (localStorage.getItem("lemons_user")) {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();

@@ -166,32 +166,37 @@ export async function POST(req: NextRequest) {
       history: ChatMessage[];
     };
 
-    // If Groq is configured, use LLM
+    // If Groq is configured, try LLM first, fall back to keyword matching on error
     if (isGroqConfigured && groq) {
-      const data = type === "mentors" ? mentors : founders;
-      const systemPrompt = `You are the Lemons AI assistant, helping users discover ${type} in the EPIC-Lab network. You have access to the following ${type} database:\n\n${JSON.stringify(data, null, 2)}\n\nWhen users describe what they need, recommend specific people by name with reasons. Be concise, warm, and specific. Always reference actual people from the database. Use markdown formatting for names (bold) and structure your response clearly.`;
+      try {
+        const data = type === "mentors" ? mentors : founders;
+        const systemPrompt = `You are the Lemons AI assistant, helping users discover ${type} in the EPIC-Lab network. You have access to the following ${type} database:\n\n${JSON.stringify(data, null, 2)}\n\nWhen users describe what they need, recommend specific people by name with reasons. Be concise, warm, and specific. Always reference actual people from the database. Use markdown formatting for names (bold) and structure your response clearly.`;
 
-      const chatMessages = [
-        { role: "system" as const, content: systemPrompt },
-        ...history
-          .filter((m) => m.id !== "welcome")
-          .map((m) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })),
-        { role: "user" as const, content: message },
-      ];
+        const chatMessages = [
+          { role: "system" as const, content: systemPrompt },
+          ...history
+            .filter((m) => m.id !== "welcome")
+            .map((m) => ({
+              role: m.role as "user" | "assistant",
+              content: m.content,
+            })),
+          { role: "user" as const, content: message },
+        ];
 
-      const completion = await groq.chat.completions.create({
-        model: "llama-3.1-70b-versatile",
-        messages: chatMessages,
-        temperature: 0.7,
-        max_tokens: 1024,
-      });
+        const completion = await groq.chat.completions.create({
+          model: "llama-3.3-70b-versatile",
+          messages: chatMessages,
+          temperature: 0.7,
+          max_tokens: 1024,
+        });
 
-      return NextResponse.json({
-        response: completion.choices[0]?.message?.content || "I couldn't generate a response.",
-      });
+        return NextResponse.json({
+          response: completion.choices[0]?.message?.content || "I couldn't generate a response.",
+        });
+      } catch (groqError) {
+        console.error("Groq API error, falling back to keyword matching:", groqError);
+        // Fall through to keyword matching below
+      }
     }
 
     // Fallback: keyword-based matching

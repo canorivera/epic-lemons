@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Rocket, GraduationCap, Citrus, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -24,6 +26,14 @@ const roles = [
 ];
 
 export default function SignupPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (localStorage.getItem("lemons_user")) {
+      router.push("/dashboard");
+    }
+  }, [router]);
+
   return (
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl space-y-8">
